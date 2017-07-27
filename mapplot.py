@@ -32,14 +32,14 @@ origin = [36.7964, -120.822]
 # than 1000 km^2 in area.
 m = Basemap(width=2000000,height=2000000,
             rsphere=(6378137.00,6356752.3142),\
-            resolution='f',area_thresh=0.,projection='lcc',\
+            resolution='c',area_thresh=1000.,projection='lcc',\
             lat_1=35.,lat_0=origin[0],lon_0=origin[1])
 m.drawcoastlines()
 m.drawparallels(np.arange(20,50,2.5),labels=[True,False,False,False])
 m.drawmeridians(np.arange(-135,-105,2.5),labels=[False,False,False,True])
 m.drawcountries()
 m.drawstates()
-f=hp.File('AttFTLEOutput.mat','r')
+f=hp.File('attFTLEOutput.mat','r')
 attdata = f['F'][:,:,:]
 f.close()
 dim = attdata.shape 
