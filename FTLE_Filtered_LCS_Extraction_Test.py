@@ -14,7 +14,8 @@ plt.figure(num=None, figsize=(16, 16), dpi=80, facecolor='w', edgecolor='k')
 #origin = 36.7964N,-120.822E
 origin = [36.7964, -120.822]
 
-f=hp.File('attFTLEOutput.mat','r')
+#f=hp.File('attFTLEOutput.mat','r')
+f=hp.File('repFTLEOutput.mat','r')
 attdata = f['F'][:,:,:]
 f.close()
 dim = attdata.shape 
@@ -37,7 +38,7 @@ for s in sd:
             mineig[i,j] = eig[0][eigmin]
 
 
-    tol =[0,-1e-4,-1e-3,-1e-2,-1e-1,-0.25,-0.5,-1]
+    tol =[0,-1e-4,-1e-3,-1e-2,-1e-1,-0.175,-0.25,-0.5,-1]
     index = 0
     for t in tol:
         m = Basemap(width=2000000,height=2000000,\

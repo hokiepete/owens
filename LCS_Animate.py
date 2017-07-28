@@ -23,8 +23,9 @@ repdata = f['F'][:,:,:]
 f.close()
 
 
-tol =-0.25
-for t in range(dim[1]):
+atol =-0.25
+rtol =-0.175
+for t in range(1):#dim[0]):
     print t
     adx, ady = np.gradient(attdata[t,:,:],0.3,0.3)
     adxdx, adydx = np.gradient(adx,0.3,0.3)
@@ -51,10 +52,9 @@ for t in range(dim[1]):
             reigmin =  np.argmin(reig[0])
             rdirdiv[i,j] = np.dot(reig[1][:,reigmin],[rdx[i,j],rdy[i,j]])
             rmineig[i,j] = reig[0][reigmin]
-
     m = Basemap(width=2000000,height=2000000,\
         rsphere=(6378137.00,6356752.3142),\
-        resolution='h',area_thresh=10.,projection='lcc',\
+        resolution='h',area_thresh=100.,projection='lcc',\
         lat_1=35.,lat_0=origin[0],lon_0=origin[1])
     m.drawcoastlines()
     m.drawcountries()
@@ -64,12 +64,17 @@ for t in range(dim[1]):
     x = np.linspace(0, m.urcrnrx, dim[1])
     y = np.linspace(0, m.urcrnry, dim[2])
     xx, yy = np.meshgrid(x, y)
-    apotridge = np.ma.masked_where(amineig>=tol,adirdiv)
+    #plt.hold(True)
+    apotridge = np.ma.masked_where(amineig>=atol,adirdiv)
     aridge = m.contour(xx, yy, np.transpose(apotridge),levels =[0],colors='blue')
-    rpotridge = np.ma.masked_where(rmineig>=tol,rdirdiv)
+    rpotridge = np.ma.masked_where(rmineig>=rtol,rdirdiv)
     rridge = m.contour(xx, yy, np.transpose(rpotridge),levels =[0],colors='red')
-    m = 15*t
-    h, minute = divmod(m,60)
+    minute = 15*t
+    h, minute = divmod(minute,60)
+    x, y = m(-119.3,36.2167)
+    print x,y
+    m.scatter(x,y,marker='*',color='g',s=20*16)
+    plt.annotate('Visalia',xy=(x-0.05*x,y+0.03*y),size=15)
     plt.title("FTLE, 6-{0}-2016 {1:02d}{2:02d} UTC".format(9+(4+h)//24, (4+h)%24, minute))
     plt.savefig('owens_lcs_{0:04d}.tif'.format(t), transparent=False, bbox_inches='tight')
     plt.clf()

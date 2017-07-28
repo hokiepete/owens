@@ -14,7 +14,8 @@ plt.figure(num=None, figsize=(16, 16), dpi=80, facecolor='w', edgecolor='k')
 #origin = 36.7964N,-120.822E
 origin = [36.7964, -120.822]
 
-f=hp.File('attFTLEOutput.mat','r')
+#f=hp.File('attFTLEOutput.mat','r')
+f=hp.File('repFTLEOutput.mat','r')
 attdata = f['F'][:,:,:]
 f.close()
 dim = attdata.shape 
