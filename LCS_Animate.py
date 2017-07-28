@@ -18,25 +18,39 @@ f=hp.File('attFTLEOutput.mat','r')
 attdata = f['F'][:,:,:]
 f.close()
 dim = attdata.shape 
-
+f=hp.File('repFTLEOutput.mat','r')
+repdata = f['F'][:,:,:]
+f.close()
 
 
 tol =-0.25
 for t in range(dim[1]):
     print t
-    dx, dy = np.gradient(attdata[t,:,:],0.3,0.3)
-    dxdx, dydx = np.gradient(dx,0.3,0.3)
-    dxdy, dydy = np.gradient(dy,0.3,0.3) 
+    adx, ady = np.gradient(attdata[t,:,:],0.3,0.3)
+    adxdx, adydx = np.gradient(adx,0.3,0.3)
+    adxdy, adydy = np.gradient(ady,0.3,0.3) 
+    
+    rdx, rdy = np.gradient(repdata[t,:,:],0.3,0.3)
+    rdxdx, rdydx = np.gradient(adx,0.3,0.3)
+    rdxdy, rdydy = np.gradient(ady,0.3,0.3) 
 
-    dirdiv = np.empty([dim[1],dim[2]])
-    mineig = np.empty([dim[1],dim[2]])
+    adirdiv = np.empty([dim[1],dim[2]])
+    amineig = np.empty([dim[1],dim[2]])
+
+    rdirdiv = np.empty([dim[1],dim[2]])
+    rmineig = np.empty([dim[1],dim[2]])
 
     for i in range(dim[1]):
         for j in range(dim[2]):
-            eig = np.linalg.eig([[dxdx[i,j],dxdy[i,j]],[dydx[i,j],dydy[i,j]]])
-            eigmin =  np.argmin(eig[0])
-            dirdiv[i,j] = np.dot(eig[1][:,eigmin],[dx[i,j],dy[i,j]])
-            mineig[i,j] = eig[0][eigmin]
+            aeig = np.linalg.eig([[adxdx[i,j],adxdy[i,j]],[adydx[i,j],adydy[i,j]]])
+            aeigmin =  np.argmin(aeig[0])
+            adirdiv[i,j] = np.dot(aeig[1][:,aeigmin],[adx[i,j],ady[i,j]])
+            amineig[i,j] = aeig[0][aeigmin]
+            
+            reig = np.linalg.eig([[rdxdx[i,j],rdxdy[i,j]],[rdydx[i,j],rdydy[i,j]]])
+            reigmin =  np.argmin(reig[0])
+            rdirdiv[i,j] = np.dot(reig[1][:,reigmin],[rdx[i,j],rdy[i,j]])
+            rmineig[i,j] = reig[0][reigmin]
 
     m = Basemap(width=2000000,height=2000000,\
         rsphere=(6378137.00,6356752.3142),\
@@ -50,10 +64,12 @@ for t in range(dim[1]):
     x = np.linspace(0, m.urcrnrx, dim[1])
     y = np.linspace(0, m.urcrnry, dim[2])
     xx, yy = np.meshgrid(x, y)
-    potridge = np.ma.masked_where(mineig>=tol,dirdiv)
-    ridge = m.contour(xx, yy, np.transpose(potridge),levels =[0],colors='blue')
+    apotridge = np.ma.masked_where(amineig>=tol,adirdiv)
+    aridge = m.contour(xx, yy, np.transpose(apotridge),levels =[0],colors='blue')
+    rpotridge = np.ma.masked_where(rmineig>=tol,rdirdiv)
+    rridge = m.contour(xx, yy, np.transpose(rpotridge),levels =[0],colors='red')
     m = 15*t
     h, minute = divmod(m,60)
     plt.title("FTLE, 6-{0}-2016 {1:02d}{2:02d} UTC".format(9+(4+h)//24, (4+h)%24, minute))
-    plt.savefig('owens_attracting_{0:04d}.tif'.format(t), transparent=False, bbox_inches='tight')
+    plt.savefig('owens_lcs_{0:04d}.tif'.format(t), transparent=False, bbox_inches='tight')
     plt.clf()
