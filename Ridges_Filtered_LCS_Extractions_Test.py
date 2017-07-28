@@ -42,7 +42,7 @@ for s in sd:
     filtereddirdiv = filter.gaussian_filter(dirdiv,s,s)
     filteredmineig = filter.gaussian_filter(mineig,s,s)
     #attdata = filter.gaussian_filter(attdata,sd,sd)
-    tol =[0,-1e-4,-1e-3,-1e-2,-1e-1,-0.5,-1]
+    tol =[0,-1e-4,-1e-3,-1e-2,-1e-1,-0.25,-0.5,-1]
     index = 0
     for t in tol:
         m = Basemap(width=2000000,height=2000000,\
@@ -58,7 +58,7 @@ for s in sd:
         attquad = m.pcolormesh(xx, yy, np.transpose(np.squeeze(attdata[0,:,:])),shading='gouraud')
         potridge = np.ma.masked_where(filteredmineig>=t,filtereddirdiv)
         ridge = m.contour(xx, yy, np.transpose(potridge),levels =[0],colors='white')
-        ttl = plt.title("FTLE, 7-21-17 1000 UTC/6am EDT, Guass Filtered Ridges, sd = {0:d}, Threshold = {1:e}".format(s, t))
+        ttl = plt.title("FTLE, 7-09-16 0400 UTC, Guass Filtered Ridges, sd = {0:d}, Threshold = {1:e}".format(s, t))
 
         plt.savefig('owens_GuassFilterRidges_sd{0}_tol_{1}.tif'.format(s,index), transparent=False, bbox_inches='tight')
         #plt.savefig('owens_GuassFilterRidges_{0:d}.tif'.format(int(index)), transparent=False, bbox_inches='tight')

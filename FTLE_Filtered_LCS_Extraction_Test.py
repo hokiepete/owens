@@ -37,7 +37,7 @@ for s in sd:
             mineig[i,j] = eig[0][eigmin]
 
 
-    tol =[0,-1e-4,-1e-3,-1e-2,-1e-1,-0.5,-1]
+    tol =[0,-1e-4,-1e-3,-1e-2,-1e-1,-0.25,-0.5,-1]
     index = 0
     for t in tol:
         m = Basemap(width=2000000,height=2000000,\
@@ -53,7 +53,7 @@ for s in sd:
         attquad = m.pcolormesh(xx, yy, np.transpose(np.squeeze(filteredftle)),shading='gouraud')
         potridge = np.ma.masked_where(mineig>=t,dirdiv)
         ridge = m.contour(xx, yy, np.transpose(potridge),levels =[0],colors='white')
-        ttl = plt.title("FTLE, 7-21-17 1000 UTC/6am EDT, Guass Filtered FTLE, sd = {0:d}, Threshold = {1:e}".format(s, t))      
+        ttl = plt.title("FTLE, 7-09-17 0400 UTC, Guass Filtered FTLE, sd = {0:d}, Threshold = {1:e}".format(s, t))      
         plt.savefig('owens_GuassFilterFTLE_sd{0}_tol_{1}.tif'.format(s,index), transparent=False, bbox_inches='tight')
         plt.clf()
         index += 1
