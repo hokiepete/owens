@@ -25,7 +25,7 @@ f.close()
 
 atol =-0.25
 rtol =-0.175
-for t in range(1):#dim[0]):
+for t in range(dim[0]):
     print t
     adx, ady = np.gradient(attdata[t,:,:],0.3,0.3)
     adxdx, adydx = np.gradient(adx,0.3,0.3)
